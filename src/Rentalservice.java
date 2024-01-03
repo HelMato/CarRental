@@ -1,14 +1,20 @@
-import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class RentalService {
+    private CarStorage carStorage;
+    private RentalStorage rentalStorage;
 
-    public Optional<Car> getCar(String vin) {
-        return carStorage.getAllCars().stream().filter(car -> car.getVin().equals(vin)).findFirst();
+    public RentalService(CarStorage carStorage, RentalStorage rentalStorage) {
+        this.carStorage = carStorage;
+        this.rentalStorage = rentalStorage;
     }
-
+    public Optional<Car> getCar(String vin) {
+        return carStorage.getCarsList().stream().filter(Car -> Car.getVin().equals(vin)).findFirst();
+    }
 
     public double estimatePrice(String vin, LocalDate startDate, LocalDate endDate) {
         Optional<Car> carOptional = getCar(vin);
@@ -17,7 +23,7 @@ public class RentalService {
             Car car = carOptional.get();
             Type type = car.getType();
             int dailyCost = 100;
-            int days = (int) Duration.between(startDate, endDate).toDays();
+            long days = ChronoUnit.DAYS.between(startDate, endDate);
             int typeRate;
 
             switch (type) {
@@ -39,7 +45,7 @@ public class RentalService {
         return 0;
     }
 
-    public Rental rent(int userID, String vin, LocalDate startDate, LocalDate endDate) {
+    public Rental makeRent(int userID, String vin, LocalDate startDate, LocalDate endDate) {
         Car car = getCar(vin).orElseThrow();
         if (isAvailable(vin, startDate, endDate)) {
             Rental rental = new Rental(new User(userID), car, startDate, endDate);
@@ -51,89 +57,34 @@ public class RentalService {
     }
 
     public boolean isAvailable(String vin, LocalDate startDate, LocalDate endDate) {
-        boolean carDoesNotExist = getCar(vin).isEmpty();
-        if (carDoesNotExist) {
+        Optional<Car> auto = getCar(vin);
+        if (auto.isEmpty()) {
             return false;
+            //bo nie ma takiego auta
         }
         if (rentalStorage.getAllRentals().isEmpty()) {
             return true;
+            //bo nie ma takiego rentala
         }
-        List<Rental> rentalOptional = RentalStorage.getAllRentals().stream()
-                .filter(rental -> rental.getCar().getVin().equals(vin))
-                .findfFirst()
-                .orElse(null);
-        for (Rental rental : rentalOptional) {
-            if (isStartoverendDate(startDate, endDate, rental)) {
+        List<Rental> rentalList = rentalStorage.getAllRentals()
+                .stream().filter(rental -> rental.getCar().getVin().equals(vin))
+                .collect(Collectors.toList());
+        for (Rental rental : rentalList) {
+            if (isStartAfterEndDate(startDate, endDate, rental)) {
                 return false;
             }
         }
         return true;
     }
-
-    private boolean isStartoverendDate(LocalDate startDate, LocalDate endDate, Rental rental) {
-        boolean isEndBeforeRentalStart = endDate.isBefore(rental.getStartDate());
-        boolean isStartDateAfterRentalEnd = startDate.isAfter(rental.getEndDate());
-        return (isEndBeforeRentalStart || isStartDateAfterRentalEnd);
-
+    boolean isStartAfterEndDate(LocalDate startDate, LocalDate endDate, Rental newRental) {
+        boolean isNewRentalStartDateAfterOldRentalEnd = startDate.isAfter(newRental.getEndDate());
+        boolean isNewRentalEndAfterOldRentalStart = endDate.isAfter(newRental.getStartDate());
+        return isNewRentalStartDateAfterOldRentalEnd && isNewRentalEndAfterOldRentalStart;
+    } 
+    public Optional<Car> findCarByVin(String vin) {
+        return carStorage.getCarsList()
+                .stream()
+                .filter(Car -> Car.getVin().equals(vin)).findFirst();
     }
-        if(rentalOptional.isPresent())
-
-    {
-        Rental rental = rentalOptional.get();
-        if (isStartoverendDate(startDate, endDate, rental)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-        return true;
-
-
-    Car car = getCar(vin).orElseThrow();
-    List<Rental> existingRentals = RentalStorage.rentalStorage.getRentalList();
-        for(Rental rental:existingRentals) {
-        if (rental.getCar().equals(car)) {
-            if (startDate.isBefore(rental.getDateTo()) && endDate.isAfter(rental.getDateFrom())) {
-                return false;
-            }
-        }
-    }
-                return true;
 
 }
-
-
-
-    /*
-
-    RentalService.rent(vin, cośtamID, startDate, endDate --3
-    czy samochod istnieje
-    czy jest dostepny --4
-            if
-            true wynajac samochod
-            else powiadomic o niedostepnosci
-        zwrocic status wynajecia
-
-    rentalService isavailable(vin, startDate, endDate) --2
-        czy samochod istnieje
-        czy istnieje rental dla tego samochodu
-        15-20.09 -> data rentala
-        15-20.09; 17-27.09; 16-18.09; 14-21.09
-
-        if
-            true
-                data poczatkowa dostepnosci mniejsza od daty koncowej rentala
-                data koncowa dostepnosci mniejsza od poczatkowej rentala
-            false
-                zwracamy informacje, ze auto dostepne
-  rentalService.estimatePrice(vin, startDate, endDate) --2
-  wyszukac samochod dla vinu --1
-  ilosc dni * cena za dzien * wspolczynnik z Typu samochodu
-    */
-
-public Optional<Car> findCarByVin(String vin){
-        return carStorage.getAllCars().stream()
-        .filter(car->car.getVin().equals(vin))
-        .findFirst();
-        }
-
