@@ -8,10 +8,6 @@ public enum Type {
         this.multiplier=multiplier;
     }
 public double getMultiplier(){
-
         return multiplier;
 }
-
-
-
 }
