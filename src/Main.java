@@ -2,39 +2,28 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public class Main {
- public static void main(String[] args) {
-  CarStorage carsStorage = CarStorage.getInstance();
-  carsStorage.addCar(new Car("Skoda", "Fabia", "abc", Type.PREMIUM));
-  RentalStorage rentalStorage = RentalStorage.getInstance();
-  RentalService rentalService = new RentalService(carsStorage, rentalStorage);
+    public static void main(String[] args){
 
-  double abc = rentalService.optionalPrice (
-   "abc",
-           LocalDate.now().plusDays(1),
-   LocalDate.now().plusDays(3)
-  );
-  System.out.println(abc);
-  /*
-  rentalService rent(vin, userId)
-  czy samochod istnieje
-  czy jest dostepny
-  zwrocic status wynajecia
-  rentalService.isAvailable(vin, startDate, endDate....
-  rentalService.optionalPrice(via,startDate, endDate
-*/
- }
+        CarStorage carStorage = CarStorage.getInstance();
+        carStorage.addCar(new Car("Skoda", "Fabia", "abc", Type.PREMIUM));
 
- ;
-}
+        RentalStorage rentalStorage = RentalStorage.getInstance();
+        RentalService rentalService = new RentalService(carStorage, rentalStorage);
 
+        double price = rentalService.estimatePrice(
+                "abc",
+                LocalDate.now().plusDays(1),
+                LocalDate.now().plusDays(3)
+        );
+        System.out.println("Estimated Price: " + price);
 
-  Optional<Car> abc=carsStorage.getAllCars().stream()
-          .filter(car->car.getVin().equals("abc"))
-          .findFirst();
+        Optional<Car> carOptional = rentalService.findCarByVin("abc");
 
+        carOptional.ifPresent(car -> System.out.println("Found car: " + car));
 
-  Car car1 = new Car("ford","mondeo", "W011321213213", Type.STANDARD);
-  carsStorage.addCar(car1);
-  System.out.println(carsStorage.getAllCars());
- }
+        Car car1 = new Car("Ford", "Mondeo", "W011321213213", Type.STANDARD);
+        carStorage.addCar(car1);
+
+        System.out.println("All Cars: " + carStorage.getCarsList());
+    }
 }
