@@ -1,0 +1,107 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class CarStorageTest {
+    CarStorageTest() {
+    }
+
+    @Test
+    void checksIfObjectsAreBeingCreatedCorrectlyByConstructor() {
+    }
+
+    @Test
+    void checksIfValuesAreBeingAssignedToFieldsCorrectlyByConstructor() {
+    }
+
+    @Test
+    void checksIfGetInstanceGivesAcessToSingleInstanceofClassCarStorage() {
+        CarStorage carstorage = CarStorage.getInstance();
+        Assertions.assertNotNull(carstorage);
+    }
+
+    @Test
+    void shouldReturnCarsList() {
+        CarStorage carstorage = CarStorage.getInstance();
+        Car car = new Car("opel", "astra", "123", Type.STANDARD);
+        carstorage.addCar(car);
+        List<Car> carslist = carstorage.getCarsList();
+        Assertions.assertNotNull(carslist);
+        Assertions.assertEquals(1, carslist.size());
+        Assertions.assertTrue(carslist.contains(car));
+    }
+
+    @Test
+    void shouldCheckGetCarByVin() {
+        CarStorage carstorage = CarStorage.getInstance();
+        Car car = new Car("opel", "astra", "123", Type.STANDARD);
+        carstorage.addCar(car);
+        Optional<Car> wantedCar = carstorage.getCar("123");
+        Assertions.assertTrue(wantedCar.isPresent());
+        Assertions.assertEquals(wantedCar.get(), car);
+    }
+
+    @Test
+    void shouldReturnEmptyOptionalNOEXCEPTIONifThereIsNoCarWithSpecificVin() {
+        CarStorage carstorage = CarStorage.getInstance();
+        Car car = new Car("opel", "astra", "123", Type.STANDARD);
+        carstorage.addCar(car);
+        Optional<Car> wantedcar = carstorage.getCar("23fdjff");
+        Assertions.assertTrue(wantedcar.isEmpty());
+    }
+
+    @Test
+    void shouldAddCarTocarStorage() {
+        CarStorage carstorage = CarStorage.getInstance();
+        Car car = new Car("opel", "astra", "123", Type.STANDARD);
+        carstorage.addCar(car);
+        List<Car> carslist = carstorage.getCarsList();
+        Assertions.assertTrue(carslist.contains(car));
+    }
+
+    @Test
+    void shouldRemoveCarFromStorage() {
+        CarStorage carstorage = CarStorage.getInstance();
+        Car car = new Car("opel", "astra", "123", Type.STANDARD);
+        carstorage.addCar(car);
+        carstorage.removeCar("123");
+        List<Car> carsList = carstorage.getCarsList();
+        Assertions.assertFalse(carsList.contains(car));
+    }
+
+    @Test
+    void shouldConfirmThatCarWasNotRemovedfromCarsList() {
+        CarStorage carstorage = CarStorage.getInstance();
+        Car car = new Car("opel", "astra", "123", Type.STANDARD);
+        carstorage.addCar(car);
+        carstorage.removeCar("123");
+        List<Car> carsList = carstorage.getCarsList();
+        Assertions.assertTrue(carsList.contains(car));
+    }
+
+    @Test
+    void shouldPurgeWholeCarsList() {
+        CarStorage carstorage = CarStorage.getInstance();
+        Car car = new Car("opel", "astra", "123", Type.STANDARD);
+        carstorage.addCar(car);
+        carstorage.purgeList();
+        List<Car> carList = carstorage.getCarsList();
+        Assertions.assertTrue(carList.isEmpty());
+    }
+
+    @Test
+    void shouldAssertThatListWasNotPurged() {
+        CarStorage carstorage = CarStorage.getInstance();
+        Car car = new Car("opel", "astra", "123", Type.STANDARD);
+        carstorage.addCar(car);
+        carstorage.purgeList();
+        List<Car> carList = carstorage.getCarsList();
+        Assertions.assertFalse(carList.isEmpty());
+    }
+}

@@ -1,0 +1,96 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.junit.jupiter.api.Test;
+
+class TypeTest {
+    TypeTest() {
+    }
+
+    @Test
+    void checkifValueofECONOMYisCorrectasExpected() {
+        Type economy = Type.ECONOMY;
+        double multiplier = economy.getMultiplier();
+        AssertionsForClassTypes.assertThat(multiplier).isEqualTo(1.0);
+    }
+
+    @Test
+    void shouldConfirmIfValueofECONOMYIsIncorrect() {
+        Type economy = Type.ECONOMY;
+        double multiplier = economy.getMultiplier();
+        AssertionsForClassTypes.assertThat(multiplier).isEqualTo(2.0);
+    }
+
+    @Test
+    void checkifValueOfSTANDARDisCorrectAsExpected() {
+        Type standard = Type.STANDARD;
+        double multiplier = standard.getMultiplier();
+        AssertionsForClassTypes.assertThat(multiplier).isEqualTo(2.0);
+    }
+
+    @Test
+    void shoulConfirmIfValueOfSTANDARDisIncorrect() {
+        Type standard = Type.STANDARD;
+        double multiplier = standard.getMultiplier();
+        AssertionsForClassTypes.assertThat(multiplier).isEqualTo(3.0);
+    }
+
+    @Test
+    void checkIfValueofPREMIUMisCorrectAsExpected() {
+        Type premium = Type.PREMIUM;
+        double multiplier = premium.getMultiplier();
+        AssertionsForClassTypes.assertThat(multiplier).isEqualTo(3.0);
+    }
+
+    @Test
+    void shouldConfirmifValueOfPREMIUMisIncorrect() {
+        Type premium = Type.PREMIUM;
+        double multiplier = premium.getMultiplier();
+        AssertionsForClassTypes.assertThat(multiplier).isEqualTo(4.0);
+    }
+
+    @Test
+    void valuesCheckIfAllENUMsArePresentandAreinOrder() {
+        Type[] values = Type.values();
+        AssertionsForClassTypes.assertThat(values).containsExactly(new Type[]{Type.ECONOMY, Type.PREMIUM, Type.STANDARD});
+    }
+
+    @Test
+    void checksIfGivenStringSTANDARDisSameAsNameSTANDARDinEnum() {
+        Type standard = Type.valueOf("STANDARD");
+        AssertionsForClassTypes.assertThat(standard).isEqualTo(Type.STANDARD);
+    }
+
+    @Test
+    void shouldConfirmIfGivenStringECONOMYisDifferentThanNameECONOMYinEnum() {
+        Type economy = Type.valueOf("ECONOMYX");
+        AssertionsForClassTypes.assertThat(economy).isEqualTo(Type.ECONOMY);
+    }
+
+    @Test
+    void shouldConfirmIfGivenStringPREMIUMIsDifferentThanNamePREMIUMinEnum() {
+        Type premium = Type.valueOf("PREMIUMX");
+        AssertionsForClassTypes.assertThat(premium).isEqualTo(Type.PREMIUM);
+    }
+
+    @Test
+    void shouldConfirmIfGivenStringSTANDARDisDifferentThanNameSTANDARDinEnum() {
+        Type standard = Type.valueOf("STANDARDX");
+        AssertionsForClassTypes.assertThat(standard).isEqualTo(Type.STANDARD);
+    }
+
+    @Test
+    void valueOfChecksIfGivenStringPREMIUMisSameAsNamePREMIUMinEnum() {
+        Type premium = Type.valueOf("PREMIUM");
+        AssertionsForClassTypes.assertThat(premium).isEqualTo(Type.PREMIUM);
+    }
+
+    @Test
+    void valueOfChecksifGivenStringECONOMYisSameAsNameECONOMYInEnum() {
+        Type economy = Type.valueOf("ECONOMY");
+        AssertionsForClassTypes.assertThat(economy).isEqualTo(Type.ECONOMY);
+    }
+}

@@ -1,0 +1,213 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.stream.Stream;
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class RentalServiceTest {
+    private CarStorage carStorage;
+    private RentalStorage rentalStorage;
+    private RentalService rentalService;
+
+    RentalServiceTest() {
+    }
+
+    @BeforeEach
+    void setUp() {
+        this.carStorage = CarStorage.getInstance();
+        this.rentalStorage = RentalStorage.getInstance();
+        this.rentalService = new RentalService(this.carStorage, this.rentalStorage);
+    }
+
+    @AfterEach
+    void cleanUp() {
+        this.carStorage.purgeList();
+    }
+
+    @Test
+    void findCarByVinShouldReturnOptionalCar() {
+        Car car = new Car("opel", "astra", "345", Type.PREMIUM);
+        this.carStorage.addCar(car);
+        Optional<Car> foundCar = this.rentalService.findCarByVin("345");
+        Assertions.assertTrue(foundCar.isPresent());
+        Assertions.assertEquals(car, foundCar.get());
+    }
+
+    @Test
+    void shouldNotFindCar() {
+        Car car = new Car("opel", "astra", "345", Type.PREMIUM);
+        this.carStorage.addCar(car);
+        Optional<Car> foundCar = this.rentalService.findCarByVin("234");
+        org.assertj.core.api.Assertions.assertThat(foundCar).isEmpty();
+    }
+
+    @Test
+    void shouldThrowExceptionWhenOptionaCarisEmpty() {
+        Car car = new Car("opel", "astra", "345", Type.PREMIUM);
+        this.carStorage.addCar(car);
+        Optional<Car> foundCar = this.rentalService.findCarByVin("24444");
+        AssertionsForClassTypes.assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
+            this.rentalService.throwExceptionMethod((Exception)null, "Blad");
+        }).withMessage("Blad:");
+    }
+
+    @Test
+    void shouldHaveOverLappingDates() {
+        Car car = new Car("opel", "astra", "345", Type.PREMIUM);
+        this.carStorage.addCar(car);
+        LocalDate firstStartDate = LocalDate.of(2024, 1, 20);
+        LocalDate firstEndDate = LocalDate.of(2024, 1, 28);
+        Rental firstRent = new Rental(new User(1), car, firstStartDate, firstEndDate);
+        LocalDate secondStartDate = LocalDate.of(2024, 1, 23);
+        LocalDate secondEndDate = LocalDate.of(2024, 1, 31);
+        new Rental(new User(3), car, secondStartDate, secondEndDate);
+        boolean ifAreOverlapping = this.rentalService.isOverlappingDates(secondStartDate, secondEndDate, firstRent);
+        Assertions.assertTrue(ifAreOverlapping, "Nowe wypożyczenie powinno nakładac sie na istniejace");
+    }
+
+    @Test
+    void shouldNotHaveOverLappingDates() {
+        Car car = new Car("opel", "astra", "123", Type.PREMIUM);
+        this.carStorage.addCar(car);
+        LocalDate firstStartDate = LocalDate.of(2024, 1, 20);
+        LocalDate firstEndDate = LocalDate.of(2024, 1, 25);
+        Rental firstRent = new Rental(new User(1), car, firstStartDate, firstEndDate);
+        LocalDate secondStartDate = LocalDate.of(2024, 1, 21);
+        LocalDate secondEndDate = LocalDate.of(2024, 1, 27);
+        new Rental(new User(2), car, secondStartDate, secondEndDate);
+        boolean ifAreOverlapping = this.rentalService.isOverlappingDates(secondStartDate, secondEndDate, firstRent);
+        Assertions.assertFalse(ifAreOverlapping, "Nowe wypozyczenie nie naklada sie na istniejace, A POWINNO SIE TO POKAZYWAC");
+    }
+
+    @Test
+    void shouldOverlapFromLeft() {
+        Rental existingRent = new Rental(new User(1), new Car("brand", "model", "123", Type.PREMIUM), LocalDate.now().plusDays(1L), LocalDate.now().plusDays(5L));
+        new Rental(new User(3), new Car("brand", "model", "123", Type.PREMIUM), LocalDate.now(), LocalDate.now().plusDays(3L));
+        boolean isOverlappingFromLeft = this.rentalService.isOverlappingDates(LocalDate.now(), LocalDate.now().plusDays(3L), existingRent);
+        org.assertj.core.api.Assertions.assertThat(isOverlappingFromLeft).isTrue();
+    }
+
+    @Test
+    void shouldOverlapFromRight() {
+        Rental existingRent = new Rental((User)null, (Car)null, LocalDate.now(), LocalDate.now().plusDays(5L));
+        Rental newRental = new Rental((User)null, (Car)null, LocalDate.now().plusDays(1L), LocalDate.now().plusDays(4L));
+        boolean isOverlappingFromRight = this.rentalService.isOverlappingDates(newRental.getStartDate(), newRental.getEndDate(), existingRent);
+        org.assertj.core.api.Assertions.assertThat(isOverlappingFromRight).isTrue();
+    }
+
+    @Test
+    void shouldEstimatePriceCorrectly() {
+        Car car = new Car("opel", "astra", "123", Type.PREMIUM);
+        this.carStorage.addCar(car);
+        Rental rent = new Rental((User)null, car, LocalDate.now(), LocalDate.now().plusDays(5L));
+        double price = this.rentalService.estimatePrice("123", rent.getStartDate(), rent.getEndDate());
+        System.out.println(price);
+        Double expectedPrice = 1500.0;
+        org.assertj.core.api.Assertions.assertThat(price).isEqualTo(expectedPrice);
+    }
+
+    @Test
+    void shouldNOTestimatePriceCorrectly() {
+        Car car = new Car("brand", "model", "123", Type.STANDARD);
+        this.carStorage.addCar(car);
+        new Rental((User)null, car, LocalDate.now(), LocalDate.now().plusDays(4L));
+        double price = this.rentalService.estimatePrice("123", LocalDate.now(), LocalDate.now().plusDays(4L));
+        double expectedPrice = 500.0;
+        org.assertj.core.api.Assertions.assertThat(price).isNotEqualTo(expectedPrice);
+    }
+
+    @Test
+    void rentShouldReturnRental() {
+        Car car = new Car("brand", "model", "123", Type.PREMIUM);
+        this.carStorage.addCar(car);
+        new Rental(new User(2), car, LocalDate.now(), LocalDate.now().plusDays(5L));
+        Rental newRental = this.rentalService.makeRent(2, car, LocalDate.now(), LocalDate.now().plusDays(5L));
+        org.assertj.core.api.Assertions.assertThat(newRental).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(newRental.getCar().getVin()).isEqualTo("123");
+    }
+
+    @Test
+    void shouldReturnNullWhenRentalIsEmpty() {
+        Car car = new Car("brand", "model", "123", Type.PREMIUM);
+        new Rental(new User(2), car, LocalDate.now(), LocalDate.now().plusDays(5L));
+        Rental newrent = this.rentalService.makeRent(2, car, LocalDate.now(), LocalDate.now().plusDays(5L));
+        org.assertj.core.api.Assertions.assertThat(newrent).isNull();
+    }
+
+    @Test
+    void isBetweenshouldReturnTrue() {
+        new User(3);
+        new Car("ford", "mondeo", "dhs677", Type.PREMIUM);
+        LocalDate startDate = LocalDate.now().plusDays(2L);
+        LocalDate endDate = LocalDate.now().plusDays(5L);
+        LocalDate checkingDate = LocalDate.of(2024, 1, 15);
+        boolean result = this.rentalService.isBetween(startDate, endDate, checkingDate);
+        org.assertj.core.api.Assertions.assertThat(result).isTrue();
+    }
+
+    @Test
+    void isBetweenShouldReturnFalse() {
+        LocalDate startDate = LocalDate.of(2024, 1, 15);
+        LocalDate endDate = LocalDate.of(2024, 1, 20);
+        LocalDate checkingDate = LocalDate.of(2024, 1, 25);
+        boolean result = this.rentalService.isBetween(startDate, endDate, checkingDate);
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    void isAvailable_shouldReturnTrue() {
+        Car car = new Car("brand", "model", "123", Type.PREMIUM);
+        this.carStorage.addCar(car);
+        Rental rent = new Rental(new User(1), car, LocalDate.now(), LocalDate.now().plusDays(5L));
+        boolean availableCar = this.rentalService.isAvailable(rent.getCar().getVin(), rent.getStartDate(), rent.getEndDate());
+        Assertions.assertTrue(availableCar);
+    }
+
+    @Test
+    void isAvailableshouldReturnFalse() {
+        Car car = new Car("brand", "model", "123", Type.PREMIUM);
+        this.carStorage.addCar(car);
+        Rental rent = new Rental(new User(1), car, LocalDate.now(), LocalDate.now().plusDays(5L));
+        Rental newrent = new Rental(new User(3), car, LocalDate.now().plusDays(1L), LocalDate.now().plusDays(4L));
+        this.rentalStorage.addRental(rent);
+        boolean isavailable = this.rentalService.isAvailable(newrent.getCar().getVin(), newrent.getStartDate(), newrent.getEndDate());
+        Assertions.assertFalse(isavailable);
+    }
+
+    @ParameterizedTest
+    @MethodSource({"inputData"})
+    void shouldHaveOverlappingDates(LocalDate startDate, LocalDate endDate) {
+        Car car = new Car("make", "model", "abc", Type.PREMIUM);
+        this.carStorage.addCar(car);
+        boolean abc = this.rentalService.isAvailable(car.getVin(), startDate, endDate);
+        org.assertj.core.api.Assertions.assertThat(abc).isTrue();
+    }
+
+    private static Stream<Arguments> inputData() {
+        return Stream.of(Arguments.of(new Object[]{LocalDate.of(2023, 11, 25), LocalDate.of(2023, 11, 30)}), Arguments.of(new Object[]{LocalDate.of(2023, 11, 15), LocalDate.of(2023, 11, 26)}), Arguments.of(new Object[]{LocalDate.of(2023, 11, 27), LocalDate.of(2023, 11, 28)}), Arguments.of(new Object[]{LocalDate.of(2023, 11, 29), LocalDate.of(2023, 11, 6)}), Arguments.of(new Object[]{LocalDate.of(2023, 11, 20), LocalDate.of(2023, 11, 25)}), Arguments.of(new Object[]{LocalDate.of(2023, 11, 20), LocalDate.of(2023, 11, 25)}), Arguments.of(new Object[]{LocalDate.of(2023, 11, 20), LocalDate.of(2023, 11, 25)}));
+    }
+
+    @ParameterizedTest
+    @MethodSource({"inputData"})
+    void happyCase(LocalDate startDate, LocalDate endDate) {
+        Car car = new Car("make", "model", "abc", Type.PREMIUM);
+        this.carStorage.addCar(car);
+        boolean abc = this.rentalService.isAvailable(car.getVin(), startDate, endDate);
+        org.assertj.core.api.Assertions.assertThat(abc).isFalse();
+    }
+
+    private static Stream<Arguments> unhappyCase() {
+        return Stream.of(Arguments.of(new Object[]{LocalDate.of(2023, 11, 25), LocalDate.of(2023, 11, 20)}), Arguments.of(new Object[]{LocalDate.of(2023, 11, 15), LocalDate.of(2023, 11, 15)}), Arguments.of(new Object[]{LocalDate.of(2023, 11, 27), LocalDate.of(2023, 11, 26)}));
+    }
+}

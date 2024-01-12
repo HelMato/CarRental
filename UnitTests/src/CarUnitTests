@@ -1,0 +1,145 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class CarTest {
+    CarTest() {
+    }
+
+    @Test
+    void shouldReturnRightType() {
+        Type type = Type.PREMIUM;
+        Car car = new Car("opel", "corsa", "123", Type.PREMIUM);
+        Type rightType = car.getType();
+        AssertionsForClassTypes.assertThat(type).isEqualTo(rightType);
+    }
+
+    @Test
+    void shouldNotReturnRightType() {
+        Type expectedType = Type.STANDARD;
+        Car car = new Car("opel", "corsa", "123", Type.PREMIUM);
+        Type rightType = car.getType();
+        AssertionsForClassTypes.assertThat(rightType).isEqualTo(expectedType);
+    }
+
+    @Test
+    void shouldConfirmThatActualAndExpectedTypesAreDifferent() {
+        Type type = Type.STANDARD;
+        Car car = new Car("opel", "corsa", "123", Type.PREMIUM);
+        Type actualType = car.getType();
+        AssertionsForClassTypes.assertThat(type).isNotEqualTo(actualType);
+    }
+
+    @Test
+    void shouldGetRightBrand() {
+        String brand = "opel";
+        Car car = new Car("opel", "corsa", "123", Type.STANDARD);
+        String actualBrand = car.getBrand();
+        AssertionsForClassTypes.assertThat(actualBrand).isEqualTo(brand);
+    }
+
+    @Test
+    void shouldShowThatActualBrandAndExpectedBrandsAreDifferent() {
+        String expectedBrand = "opel";
+        Car car = new Car("skoda", "octavia", "123", Type.STANDARD);
+        String actualBrand = car.getBrand();
+        AssertionsForClassTypes.assertThat(expectedBrand).isEqualTo(actualBrand);
+    }
+
+    @Test
+    void shouldConfirmThatActualBrandandExpectedBrandareDifferent() {
+        String expectedBrand = "opel";
+        Car car = new Car("skoda", "octavia", "2334", Type.PREMIUM);
+        String actualBrand = car.getBrand();
+        AssertionsForClassTypes.assertThat(actualBrand).isNotEqualTo(expectedBrand);
+    }
+
+    @Test
+    void shouldGetRightModel() {
+        String expectedModel = "corsa";
+        Car car = new Car("opel", "corsa", "123", Type.PREMIUM);
+        String actualModel = car.getModel();
+        AssertionsForClassTypes.assertThat(actualModel).isEqualTo(expectedModel);
+    }
+
+    @Test
+    void shouldAssesIfExpectedandActualModelAreDifferent() {
+        String expectedModel = "corsa";
+        Car car = new Car("opel", "fabia", "123", Type.STANDARD);
+        String actualModel = car.getModel();
+        AssertionsForClassTypes.assertThat(expectedModel).isEqualTo(actualModel);
+    }
+
+    @Test
+    void shouldConfirmThatActualAndExpectedModelsAreDifferent() {
+        String expectedModel = "fabia";
+        Car car = new Car("opel", "corsa", "123", Type.STANDARD);
+        String actualModel = car.getModel();
+        AssertionsForClassTypes.assertThat(actualModel).isNotEqualTo(expectedModel);
+    }
+
+    @Test
+    void shouldConfirmIfActualVinAndExpectedVianareTheSame() {
+        String expectedVin = "123";
+        Car car = new Car("opel", "corsa", "123", Type.STANDARD);
+        String actualVin = car.getVin();
+        AssertionsForClassTypes.assertThat(actualVin).isEqualTo(expectedVin);
+    }
+
+    @Test
+    void shouldAssesIfActualVinAndExpectedVianareDifferent() {
+        String expectedVin = "123dd";
+        Car car = new Car("opel", "corsa", "123", Type.STANDARD);
+        String actualVin = car.getVin();
+        AssertionsForClassTypes.assertThat(actualVin).isEqualTo(expectedVin);
+    }
+
+    @Test
+    void shouldConfirmThatActualVinAndExpectedVianareDifferent() {
+        String expectedVin = "123dd";
+        Car car = new Car("opel", "corsa", "123", Type.STANDARD);
+        String actualVin = car.getVin();
+        AssertionsForClassTypes.assertThat(actualVin).isNotEqualTo(expectedVin);
+    }
+
+    @Test
+    void shouldCheckCorrectConversionCarToString() {
+        String brand = "opel";
+        String model = "astra";
+        String vin = "123";
+        Type type = Type.PREMIUM;
+        Car car = new Car(brand, model, vin, type);
+        String expectedCarAsString = "opel, astra, 123, PREMIUM";
+        String actualCar = car.toString();
+        Assertions.assertEquals(expectedCarAsString, actualCar);
+    }
+
+    @Test
+    void shouldAssesThatActualCarisDifferentthanExpectedCar() {
+        String brand = "opel";
+        String model = "astra";
+        String vin = "123";
+        Type type = Type.PREMIUM;
+        Car car = new Car(brand, model, vin, type);
+        String expectedCarAsString = "opel, corsa, 123, PREMIUM";
+        String actualCar = car.toString();
+        AssertionsForClassTypes.assertThat(actualCar).isEqualTo(expectedCarAsString);
+    }
+
+    @Test
+    void shouldConfirmThatActualCarandExpectedCarasStringsareDifferent() {
+        String brand = "opel";
+        String model = "corsa";
+        String vin = "123";
+        Type type = Type.PREMIUM;
+        Car car = new Car(brand, model, vin, type);
+        String expectedCarAsString = "skoda, fabia, 234, STANDARD";
+        String actualCarAsString = car.toString();
+        AssertionsForClassTypes.assertThat(expectedCarAsString).isNotEqualTo(actualCarAsString);
+    }
+}

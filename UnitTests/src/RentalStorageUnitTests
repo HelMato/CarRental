@@ -1,0 +1,77 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import java.time.LocalDate;
+import java.util.List;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class RentalStorageTest {
+    RentalStorageTest() {
+    }
+
+    @Test
+    void shouldCheckIfGetInctanceGivesAcessToOnlyInstance() {
+        RentalStorage rentalstorage = RentalStorage.getInstance();
+        Assertions.assertNotNull(rentalstorage);
+    }
+
+    @Test
+    void shouldAssesThatGetInstanceisNotGivingAcessToOnlyInstance() {
+        RentalStorage rentalstorage = RentalStorage.getInstance();
+        Assertions.assertNull(rentalstorage);
+    }
+
+    @Test
+    void shouldRenturnListOfAllRentals() {
+        RentalStorage rentalstorage = RentalStorage.getInstance();
+        Rental rent = new Rental(new User(3), new Car("opel", "astra", "123", Type.PREMIUM), LocalDate.now(), LocalDate.now().plusDays(4L));
+        rentalstorage.addRental(rent);
+        List<Rental> rentalList = rentalstorage.getAllRentals();
+        Assertions.assertNotNull(rentalList);
+        Assertions.assertEquals(1, rentalList.size());
+        Assertions.assertTrue(rentalList.contains(rent));
+    }
+
+    @Test
+    void shouldConfirmThatRentalWasAdded() {
+        RentalStorage rentalstorage = RentalStorage.getInstance();
+        Rental rent = new Rental(new User(3), new Car("opel", "astra", "123", Type.PREMIUM), LocalDate.now(), LocalDate.now().plusDays(4L));
+        rentalstorage.addRental(rent);
+        List<Rental> rentallist = rentalstorage.getAllRentals();
+        Assertions.assertTrue(rentallist.contains(rent));
+    }
+
+    @Test
+    void shouldRemoveRentalfromtheStorage() {
+        RentalStorage rentalstorage = RentalStorage.getInstance();
+        Rental rent = new Rental(new User(3), new Car("opel", "astra", "123", Type.PREMIUM), LocalDate.now(), LocalDate.now().plusDays(4L));
+        rentalstorage.addRental(rent);
+        rentalstorage.removeRental(rent);
+        List<Rental> rentallist = rentalstorage.getAllRentals();
+        Assertions.assertNotNull(rentallist);
+        Assertions.assertTrue(rentallist.isEmpty());
+    }
+
+    @Test
+    void shouldAssesThatRentalWasNotRemovedFromList() {
+        RentalStorage rentalstorage = RentalStorage.getInstance();
+        Rental rent = new Rental(new User(3), new Car("opel", "astra", "123", Type.PREMIUM), LocalDate.now(), LocalDate.now().plusDays(4L));
+        rentalstorage.addRental(rent);
+        rentalstorage.removeRental(rent);
+        List<Rental> rentalList = rentalstorage.getAllRentals();
+        Assertions.assertFalse(rentalList.isEmpty());
+    }
+
+    @Test
+    void shouldPurgeRentalList() {
+        RentalStorage rentalstorage = RentalStorage.getInstance();
+        Rental rent = new Rental(new User(3), new Car("opel", "astra", "123", Type.PREMIUM), LocalDate.now(), LocalDate.now().plusDays(4L));
+        rentalstorage.addRental(rent);
+        List<Rental> rentalList = rentalstorage.getAllRentals();
+        rentalstorage.purgerentalList();
+        Assertions.assertTrue(rentalList.isEmpty());
+    }
+}

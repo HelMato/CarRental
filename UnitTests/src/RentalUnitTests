@@ -1,0 +1,117 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class RentalTest {
+    RentalTest() {
+    }
+
+    @Test
+    void getUserShouldReturnCorrectUser() {
+        User expectedUser = new User(4);
+        Rental rental = new Rental(expectedUser, new Car("brand", "model", "vin", Type.ECONOMY), LocalDate.now(), LocalDate.now().plusDays(7L));
+        User actualUser = rental.getUser();
+        AssertionsForClassTypes.assertThat(actualUser).isEqualTo(expectedUser);
+    }
+
+    @Test
+    void getUserShouldNotReturnCorrectUser() {
+        User expecteduser = new User(3);
+        User differentuser = new User(6);
+        Rental rent = new Rental(expecteduser, new Car("brand", "model", "vin", Type.PREMIUM), LocalDate.now(), LocalDate.now().plusDays(8L));
+        User actualuser = rent.getUser();
+        AssertionsForClassTypes.assertThat(actualuser).isEqualTo(differentuser);
+    }
+
+    @Test
+    void getCarShouldReturnCorrectCar() {
+        Car expectedcar = new Car("brand", "model", "vin", Type.ECONOMY);
+        Rental rent = new Rental(new User(6), expectedcar, LocalDate.now(), LocalDate.now().plusDays(4L));
+        Car actualcar = rent.getCar();
+        AssertionsForClassTypes.assertThat(actualcar).isEqualTo(expectedcar);
+    }
+
+    @Test
+    void shouldNotReturnCorrectCar() {
+        Car expectedcar = new Car("opel", "corsa", "123", Type.PREMIUM);
+        Car differentcar = new Car("ford", "fiesta", "567", Type.ECONOMY);
+        Rental rent = new Rental(new User(3), expectedcar, LocalDate.now(), LocalDate.now().plusDays(4L));
+        Car actualcar = rent.getCar();
+        AssertionsForClassTypes.assertThat(differentcar).isEqualTo(actualcar);
+    }
+
+    @Test
+    void getStartDateShouldReturnRightDate() {
+        LocalDate expectedStartDate = LocalDate.now();
+        Rental rent = new Rental(new User(3), new Car("model", "brand", "vin", Type.PREMIUM), expectedStartDate, LocalDate.now().plusDays(3L));
+        LocalDate actualStartDate = rent.getStartDate();
+        AssertionsForClassTypes.assertThat(expectedStartDate).isEqualTo(actualStartDate);
+    }
+
+    @Test
+    void shouldShowThatExpectedStartDateAndActualStartDateAreNotEqual() {
+        LocalDate actualStartDate = LocalDate.now();
+        LocalDate expectedStartDate = LocalDate.now().plusDays(7L);
+        Rental rent = new Rental(new User(3), new Car("brand", "model", "vin", Type.PREMIUM), actualStartDate, LocalDate.now().plusDays(4L));
+        LocalDate rightStartDate = rent.getStartDate();
+        AssertionsForClassTypes.assertThat(rightStartDate).isNotEqualTo(expectedStartDate);
+    }
+
+    @Test
+    void shouldShowThatExpectedDateAndActualDateAreDifferent() {
+        LocalDate actualStartDate = LocalDate.now();
+        LocalDate expectedStartDate = LocalDate.now().plusDays(5L);
+        Rental rent = new Rental(new User(3), new Car("opel", "corsa", "2455", Type.STANDARD), actualStartDate, LocalDate.now().plusDays(5L));
+        LocalDate rightStartDate = rent.getStartDate();
+        AssertionsForClassTypes.assertThat(expectedStartDate).isEqualTo(rightStartDate);
+    }
+
+    @Test
+    void getEndDateShouldReturnRightDate() {
+        LocalDate actualEndDate = LocalDate.now();
+        Rental rent = new Rental(new User(3), new Car("opel", "corsa", "2455", Type.STANDARD), LocalDate.now(), actualEndDate);
+        LocalDate correctEndDate = rent.getEndDate();
+        AssertionsForClassTypes.assertThat(actualEndDate).isEqualTo(correctEndDate);
+    }
+
+    @Test
+    void getEndDateShouldConfirmThatEndDatesAreDifferent() {
+        LocalDate actualEndDate = LocalDate.now();
+        LocalDate expectedEndDate = LocalDate.now().plusDays(5L);
+        Rental rent = new Rental(new User(3), new Car("opel", "corsa", "2455", Type.STANDARD), LocalDate.now(), actualEndDate);
+        LocalDate correctEndDate = rent.getEndDate();
+        AssertionsForClassTypes.assertThat(expectedEndDate).isNotEqualTo(correctEndDate);
+    }
+
+    @Test
+    void shouldShowThatExpectedEndDateAndActualAreDifferent() {
+        LocalDate actualEndDate = LocalDate.now();
+        LocalDate expectedEndDate = LocalDate.now().plusDays(5L);
+        Rental rent = new Rental(new User(3), new Car("opel", "corsa", "2455", Type.STANDARD), LocalDate.now(), actualEndDate);
+        LocalDate correctEndDate = rent.getEndDate();
+        AssertionsForClassTypes.assertThat(expectedEndDate).isEqualTo(correctEndDate);
+    }
+
+    @Test
+    public void shouldCheckCorrectConvertionRentalToString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        User user = new User(4);
+        Car car = new Car("opel", "astra", "123", Type.PREMIUM);
+        LocalDate startDate = LocalDate.now();
+        String formattedStartDate = dateFormat.format(Date.valueOf(startDate));
+        LocalDate endDate = LocalDate.now().plusDays(5L);
+        String formattedEndDate = dateFormat.format(Date.valueOf(endDate));
+        Rental rent = new Rental(user, car, startDate, endDate);
+        String expectedStringRental = "Rental{user=4, car=opel, astra, 123, PREMIUM, startDate=" + formattedStartDate + ", endDate=" + formattedEndDate + "}";
+        String actualStringRental = rent.toString();
+        Assertions.assertEquals(expectedStringRental, actualStringRental);
+    }
+}

@@ -1,0 +1,39 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class UserTest {
+    UserTest() {
+    }
+
+    @Test
+    void shouldConfirmThatExpectedIdandActualIdareTheSame() {
+        int expectedId = 23;
+        User user = new User(expectedId);
+        int actualId = user.getId();
+        Assertions.assertEquals(expectedId, actualId);
+    }
+
+    @Test
+    void shouldConfirmThatExpectedIdandActualIdareDifferent() {
+        int expectedId = 25;
+        int id = 23;
+        User user = new User(id);
+        int actualId = user.getId();
+        AssertionsForClassTypes.assertThat(expectedId).isNotEqualTo(actualId);
+    }
+
+    @Test
+    void shouldAssesIfExpectedIdandActualIdareDifferent() {
+        int expectedId = 25;
+        int id = 23;
+        User user = new User(id);
+        int actualId = user.getId();
+        AssertionsForClassTypes.assertThat(expectedId).isEqualTo(actualId);
+    }
+}
