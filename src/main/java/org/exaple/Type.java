@@ -1,3 +1,5 @@
+package org.exaple;
+
 public enum Type {
     ECONOMY(1), STANDARD(2), PREMIUM(3);
 
@@ -8,10 +10,6 @@ public enum Type {
         this.multiplier=multiplier;
     }
 public double getMultiplier(){
-
         return multiplier;
 }
-
-
-
 }

@@ -1,3 +1,5 @@
+package org.exaple;
+
 public class Car {
     private final String brand;
     private final String model;
@@ -27,4 +29,10 @@ public class Car {
         return vin;
     }
 
+    @Override
+    public String toString() {
+        return brand +", "+ model +", "+
+            vin + ", "+
+               type ;
+    }
 }
